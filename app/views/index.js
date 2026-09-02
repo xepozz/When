@@ -395,6 +395,23 @@ ${error ? `<div class="alert">${esc(error)}</div>` : ''}
 <button class="btn">Take screenshot</button></form></section>` });
 }
 
+function paddleCheckout({ config, user, plan, priceId }) {
+  const p = config.plans[plan];
+  return layout({ config, user, title: `Checkout · ${p.name}`, body: `
+<section class="narrow"><h1>${esc(p.name)} plan</h1><p class="lead">${money(p.priceCents)}/month · ${n(p.monthly)} renders. The secure checkout opens in a moment; if it does not, <a href="#" id="open">click here</a>.</p>
+<p class="fine">Payments are processed by Paddle.com, our merchant of record. Your plan activates automatically after payment.</p></section>
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>
+(function(){
+  ${config.paddle.env === 'sandbox' ? "Paddle.Environment.set('sandbox');" : ''}
+  Paddle.Initialize({ token: ${JSON.stringify(config.paddle.clientToken)}, eventCallback: function (ev) { if (ev.name === 'checkout.completed') { setTimeout(function(){ location.href = '/dashboard?upgraded=1'; }, 1500); } } });
+  function open(){ Paddle.Checkout.open({ items: [{ priceId: ${JSON.stringify(priceId)}, quantity: 1 }], customer: { email: ${JSON.stringify(user.email)} }, customData: { user_id: ${JSON.stringify(String(user.id))}, plan: ${JSON.stringify(plan)} }, settings: { successUrl: ${JSON.stringify(config.appUrl + '/dashboard?upgraded=1')} } }); }
+  document.getElementById('open').addEventListener('click', function(e){ e.preventDefault(); open(); });
+  open();
+})();
+</script>` });
+}
+
 const error = ({ config, status, message }) => layout({ config, title: String(status), body: `<section class="narrow"><h1>${esc(status)}</h1><p class="lead">${esc(message)}</p><p><a href="/">Back to the start</a></p></section>` });
 
-module.exports = { layout, home, pricing, docs, signup, login, dashboard, toolPdf, toolShot, error, esc, DOC_LANGS };
+module.exports = { layout, home, pricing, docs, signup, login, dashboard, toolPdf, toolShot, paddleCheckout, error, esc, DOC_LANGS };

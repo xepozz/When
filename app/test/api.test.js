@@ -19,7 +19,7 @@ before(async () => {
   await new Promise((r) => target.on('listening', r));
   const config = require('../src/config');
   const plans = Object.fromEntries(Object.entries(config.plans).map(([k, p]) => [k, { ...p, ratePerMin: 10000 }])); // per-plan limits are tested in isolation below
-  app = build({ logger: process.env.TEST_LOG ? { level: 'error' } : false, dbPath: ':memory:', chromiumPath: CHROMIUM, allowPrivateNetwork: true, renderTimeoutMs: 20000, appUrl: 'http://localhost:3000', plans,
+  app = build({ logger: process.env.TEST_LOG ? { level: 'error' } : false, dbPath: ':memory:', chromiumPath: CHROMIUM, allowPrivateNetwork: true, renderTimeoutMs: 20000, appUrl: 'http://localhost:3000', plans, billingProvider: 'stripe',
     stripe: { secretKey: '', webhookSecret: WEBHOOK_SECRET, prices: { starter: 'price_starter', pro: 'price_pro', business: 'price_business' } } });
   await app.ready();
   const u = auth.createUser(app.db, 'test@example.com', 'password123');

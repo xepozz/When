@@ -23,6 +23,19 @@ module.exports = {
   renderTimeoutMs: int('RENDER_TIMEOUT_MS', 30000),
   maxQueue: int('RENDER_MAX_QUEUE', 50),
   allowPrivateNetwork: env('ALLOW_PRIVATE_NETWORK', '0') === '1',
+  // 'stripe' (needs a Stripe-supported country), 'paddle' (merchant of record, any non-sanctioned country) or 'none'
+  billingProvider: env('BILLING_PROVIDER', env('STRIPE_SECRET_KEY', '') ? 'stripe' : (env('PADDLE_CLIENT_TOKEN', '') ? 'paddle' : 'none')),
+  paddle: {
+    env: env('PADDLE_ENV', 'production'),            // 'sandbox' while testing
+    apiKey: env('PADDLE_API_KEY', ''),
+    clientToken: env('PADDLE_CLIENT_TOKEN', ''),
+    webhookSecret: env('PADDLE_WEBHOOK_SECRET', ''),
+    prices: {
+      starter: env('PADDLE_PRICE_STARTER', ''),
+      pro: env('PADDLE_PRICE_PRO', ''),
+      business: env('PADDLE_PRICE_BUSINESS', ''),
+    },
+  },
   stripe: {
     secretKey: env('STRIPE_SECRET_KEY', ''),
     webhookSecret: env('STRIPE_WEBHOOK_SECRET', ''),

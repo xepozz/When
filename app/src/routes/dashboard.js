@@ -72,7 +72,7 @@ function renderDashboard(app, user, extra = {}) {
     keys: db.prepare('SELECT id, prefix, name, created_at FROM api_keys WHERE user_id = ? AND revoked_at IS NULL ORDER BY id').all(user.id),
     recent: usage.recentRenders(db, user.id, 15),
     series: usage.dailySeries(db, user.id, 30),
-    billingReady: !!config.stripe.secretKey,
+    billingReady: config.billingProvider !== 'none',
     ...extra,
   });
 }

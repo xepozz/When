@@ -7,7 +7,7 @@ const { BrowserPool } = require('./render/pool');
 const views = require('../views');
 
 function build(overrides = {}) {
-  const cfg = { ...config, ...overrides, stripe: { ...config.stripe, ...(overrides.stripe || {}) } };
+  const cfg = { ...config, ...overrides, stripe: { ...config.stripe, ...(overrides.stripe || {}) }, paddle: { ...config.paddle, ...(overrides.paddle || {}) } };
   const app = fastify({ logger: overrides.logger ?? { level: process.env.LOG_LEVEL || 'info' }, bodyLimit: 4 * 1024 * 1024, trustProxy: true });
   const db = open(cfg.dbPath);
   const pool = new BrowserPool({ concurrency: cfg.renderConcurrency, maxQueue: cfg.maxQueue, chromiumPath: cfg.chromiumPath });
@@ -21,7 +21,7 @@ function build(overrides = {}) {
 
   // Same-origin check for browser form posts (cookies are SameSite=Lax; this closes the remaining gap).
   app.addHook('preHandler', async (req, reply) => {
-    if (req.method !== 'POST' || req.url.startsWith('/v1/') || req.url.startsWith('/billing/webhook')) return;
+    if (req.method !== 'POST' || req.url.startsWith('/v1/') || req.url.startsWith('/billing/webhook') || req.url.startsWith('/billing/paddle/webhook')) return;
     const origin = req.headers.origin || (req.headers.referer ? new URL(req.headers.referer).origin : null);
     if (origin && origin !== new URL(cfg.appUrl).origin && !origin.startsWith('http://localhost') && !origin.startsWith('http://127.0.0.1')) {
       reply.code(403).type('text/html').send(views.error({ config: cfg, status: 403, message: 'Cross-site form submission blocked.' }));
@@ -32,7 +32,7 @@ function build(overrides = {}) {
     const status = error.statusCode && error.statusCode >= 400 ? error.statusCode : 500;
     if (status >= 500 && !error.statusCode) req.log.error(error); else if (status >= 500) req.log.warn({ err: error.message }, 'expected 5xx');
     const message = status >= 500 ? 'Internal error' : error.message;
-    if (req.url.startsWith('/v1/') || req.url.startsWith('/billing/webhook') || (req.headers.accept || '').includes('application/json')) {
+    if (req.url.startsWith('/v1/') || req.url.includes('/webhook') || (req.headers.accept || '').includes('application/json')) {
       return reply.code(status).send({ error: { code: error.code || (status === 429 ? 'rate_limited' : 'error'), message: error.validation ? error.message : message } });
     }
     return reply.code(status).type('text/html').send(views.error({ config: cfg, status, message }));

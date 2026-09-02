@@ -14,7 +14,7 @@ curl -X POST https://YOUR-HOST/v1/pdf \
 - PDF: A0–A6/Letter/Legal/Tabloid, margins, landscape, header/footer templates with page numbers, page ranges, print or screen CSS, `@page` size
 - Screenshot: viewport, full page, element by selector, clip, retina scale, PNG/JPEG/WebP, transparent, dark mode
 - Both: wait for selector, delay, inject CSS, hide elements, block ads, locale, timezone, `response=json`
-- Accounts, API keys, monthly quotas (failures not charged), per-plan rate limits, Stripe subscriptions with webhooks
+- Accounts, API keys, monthly quotas (failures not charged), per-plan rate limits, subscriptions via Paddle (merchant of record, any non-sanctioned country) or Stripe, with webhooks
 - Free tools pages (HTML→PDF, screenshot) and docs for cURL, PHP, Laravel, Node, Python, Ruby, Go
 - OpenAPI at `/openapi.json`, `llms.txt`, sitemap, health endpoint
 - SSRF guard: DNS-resolved private-range check on the URL and on every sub-request the page makes
@@ -23,7 +23,7 @@ curl -X POST https://YOUR-HOST/v1/pdf \
 ## Deploy in one click
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/xepozz/When)
 
-Also: Fly.io (`fly.toml`), Railway (`app/railway.json`), DigitalOcean (`.do/app.yaml`), or any VPS with Docker Compose + Caddy (`app/DEPLOY.md`). After deploy, set `APP_URL` and the Stripe variables from `app/.env.example`.
+Also: Fly.io (`fly.toml`), Railway (`app/railway.json`), DigitalOcean (`.do/app.yaml`), or any VPS with Docker Compose + Caddy (`app/DEPLOY.md`). After deploy, set `APP_URL` and the Paddle (or Stripe) variables from `app/.env.example`.
 
 ## Run locally
 ```bash

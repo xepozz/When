@@ -18,7 +18,19 @@ docker compose logs -f app   # wait for "Server listening"
 ```
 Open `https://api.yourdomain.com/health` → `{"ok":true,"browser":true,...}`.
 
-## 3. Stripe (15 minutes, once)
+## 3. Payments (15 minutes, once)
+
+Pick one provider and set `BILLING_PROVIDER` accordingly.
+
+### 3a. Paddle (works from any non-sanctioned country; Paddle is the merchant of record and handles VAT/sales tax)
+1. https://paddle.com → create a seller account (business verification takes 1–3 days; you can build with the sandbox meanwhile at https://sandbox-vendors.paddle.com).
+2. Catalog → Products → "RenderKit" with three recurring monthly prices: $9, $29, $79. Copy the `pri_...` ids into `PADDLE_PRICE_*`.
+3. Developer tools → Authentication → API key → `PADDLE_API_KEY`; client-side token → `PADDLE_CLIENT_TOKEN`.
+4. Developer tools → Notifications → new destination `https://api.yourdomain.com/billing/paddle/webhook`, events: `transaction.completed`, `subscription.activated`, `subscription.updated`, `subscription.canceled`, `subscription.past_due`, `subscription.paused`, `subscription.resumed`. Copy the secret into `PADDLE_WEBHOOK_SECRET`.
+5. Checkout → Website approval: add your domain (required before live checkouts).
+6. `docker compose up -d` again. Test in sandbox with card `4242 4242 4242 4242`; the dashboard must show the new plan after the webhook.
+
+### 3b. Stripe (only if you have a business in a Stripe-supported country)
 1. Stripe Dashboard → Product catalog → add product "RenderKit" with three recurring monthly prices: $9 (Starter), $29 (Pro), $79 (Business). Copy the three `price_...` ids into `.env`.
 2. Developers → API keys → secret key into `STRIPE_SECRET_KEY`.
 3. Developers → Webhooks → add endpoint `https://api.yourdomain.com/billing/webhook` with events `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
