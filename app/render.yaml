@@ -1,0 +1,34 @@
+# Render.com blueprint: https://render.com/docs/blueprint-spec
+# Deploy button: https://render.com/deploy?repo=https://github.com/xepozz/When
+services:
+  - type: web
+    name: renderkit
+    runtime: docker
+    rootDir: app
+    plan: starter
+    healthCheckPath: /health
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: APP_NAME
+        value: RenderKit
+      - key: APP_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DATABASE_PATH
+        value: /data/renderkit.db
+      - key: RENDER_CONCURRENCY
+        value: "2"
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PRICE_STARTER
+        sync: false
+      - key: STRIPE_PRICE_PRO
+        sync: false
+      - key: STRIPE_PRICE_BUSINESS
+        sync: false

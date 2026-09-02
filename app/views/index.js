@@ -9,7 +9,8 @@ function layout({ config, user, title, description, body, wide }) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title ? title + ' · ' + config.appName : config.appName + ' — HTML to PDF and screenshot API')}</title>
 <meta name="description" content="${esc(description || 'Turn any URL or HTML into a pixel-perfect PDF or screenshot with one HTTP request. Headless Chrome, simple pricing, free plan.')}">
-<link rel="stylesheet" href="/static/style.css"></head><body>
+<meta property="og:title" content="${esc(title ? title + ' · ' + config.appName : config.appName + ' — HTML to PDF and screenshot API')}"><meta property="og:description" content="${esc(description || 'Turn any URL or HTML into a pixel-perfect PDF or screenshot with one HTTP request.')}"><meta property="og:image" content="${esc(config.appUrl)}/static/og.png"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/static/style.css"></head><body>
 <header class="nav"><a class="brand" href="/">${esc(config.appName)}</a><nav>
 <a href="/docs">Docs</a><a href="/pricing">Pricing</a><a href="/tools/html-to-pdf">Free tools</a>
 ${user ? `<a href="/dashboard">Dashboard</a><form method="post" action="/logout" class="inline"><button class="link">Log out</button></form>` : `<a href="/login">Log in</a><a class="btn small" href="/signup">Get API key</a>`}

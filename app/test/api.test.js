@@ -164,11 +164,13 @@ test('signup, dashboard, key management, logout', async () => {
 });
 
 test('public pages render', async () => {
-  for (const url of ['/', '/pricing', '/docs', '/docs/php', '/docs/laravel', '/docs/go', '/tools/html-to-pdf', '/tools/screenshot', '/signup', '/login', '/robots.txt', '/sitemap.xml', '/health']) {
+  for (const url of ['/', '/pricing', '/docs', '/docs/php', '/docs/laravel', '/docs/go', '/tools/html-to-pdf', '/tools/screenshot', '/signup', '/login', '/robots.txt', '/sitemap.xml', '/health', '/openapi.json', '/llms.txt']) {
     const r = await app.inject({ method: 'GET', url });
     assert.equal(r.statusCode, 200, url);
   }
   assert.equal((await app.inject({ method: 'GET', url: '/docs/cobol' })).statusCode, 404);
+  const spec = (await app.inject({ method: 'GET', url: '/openapi.json' })).json();
+  assert.equal(spec.openapi, '3.0.3'); assert.ok(spec.paths['/pdf'].post && spec.paths['/screenshot'].get);
   assert.equal((await app.inject({ method: 'GET', url: '/v1/nope', headers: hdr() })).statusCode, 404);
 });
 

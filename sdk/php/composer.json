@@ -1,0 +1,17 @@
+{
+    "name": "renderkit/renderkit",
+    "description": "PHP client for the RenderKit API: HTML/URL to PDF and screenshots with headless Chrome.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["pdf", "html-to-pdf", "screenshot", "headless-chrome", "api", "invoice"],
+    "homepage": "https://github.com/xepozz/When",
+    "require": {
+        "php": ">=8.1",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": { "RenderKit\\": "src/" }
+    },
+    "minimum-stability": "stable"
+}

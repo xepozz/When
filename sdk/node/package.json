@@ -1,0 +1,12 @@
+{
+  "name": "renderkit-client",
+  "version": "1.0.0",
+  "description": "Client for the RenderKit API: HTML/URL to PDF and screenshots with headless Chrome.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "license": "MIT",
+  "keywords": ["pdf", "html-to-pdf", "screenshot", "headless-chrome", "puppeteer-alternative", "invoice"],
+  "homepage": "https://github.com/xepozz/When",
+  "engines": { "node": ">=18" },
+  "scripts": { "test": "node test.js" }
+}
