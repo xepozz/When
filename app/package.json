@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/main.js",
-    "test": "node --test test/",
+    "test": "node --test test/api.test.js test/paddle.test.js test/yookassa.test.js",
     "dev": "node --watch src/main.js"
   },
   "keywords": [],

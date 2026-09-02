@@ -1,4 +1,11 @@
-# RenderKit — HTML/URL → PDF and screenshot API
+# RenderKit — HTML/URL → PDF и скриншоты, API
+
+API, которое превращает URL или HTML в PDF или PNG/JPEG/WebP одним HTTP-запросом; рендерит headless Chromium. Для рынка РФ: интерфейс на русском, цены в рублях, оплата картой через ЮKassa с чеком 54-ФЗ и автопродлением, оферта и политика конфиденциальности из коробки. Переключается на английский/USD и Paddle/Stripe одной переменной.
+
+Запуск: [`LAUNCH.md`](LAUNCH.md). Деплой и ЮKassa: [`app/DEPLOY.md`](app/DEPLOY.md). Продажи: [`marketing/ru/`](marketing/ru/).
+
+---
+
 
 Turn any URL or HTML into a PDF or a PNG/JPEG/WebP screenshot with one HTTP request, rendered by headless Chromium. Self-host it from this repo, or use a hosted instance.
 
@@ -14,7 +21,8 @@ curl -X POST https://YOUR-HOST/v1/pdf \
 - PDF: A0–A6/Letter/Legal/Tabloid, margins, landscape, header/footer templates with page numbers, page ranges, print or screen CSS, `@page` size
 - Screenshot: viewport, full page, element by selector, clip, retina scale, PNG/JPEG/WebP, transparent, dark mode
 - Both: wait for selector, delay, inject CSS, hide elements, block ads, locale, timezone, `response=json`
-- Accounts, API keys, monthly quotas (failures not charged), per-plan rate limits, subscriptions via Paddle (merchant of record, any non-sanctioned country) or Stripe, with webhooks
+- Accounts, API keys, monthly quotas (failures not charged), per-plan rate limits, subscriptions via YooKassa (Russia: receipts, auto-renewal, refunds), Paddle or Stripe, with webhooks
+- Russian or English UI (`SITE_LANG`), RUB or USD prices (`CURRENCY`), public offer and privacy policy pages
 - Free tools pages (HTML→PDF, screenshot) and docs for cURL, PHP, Laravel, Node, Python, Ruby, Go
 - OpenAPI at `/openapi.json`, `llms.txt`, sitemap, health endpoint
 - SSRF guard: DNS-resolved private-range check on the URL and on every sub-request the page makes
@@ -29,7 +37,7 @@ Also: Fly.io (`fly.toml`), Railway (`app/railway.json`), DigitalOcean (`.do/app.
 ```bash
 cd app && npm install
 CHROMIUM_PATH=/path/to/chromium ALLOW_PRIVATE_NETWORK=1 npm start   # http://localhost:3000
-CHROMIUM_PATH=/path/to/chromium npm test                             # 15 integration tests with real Chromium
+CHROMIUM_PATH=/path/to/chromium npm test                             # 27 integration tests with real Chromium
 ```
 
 ## Clients
@@ -46,7 +54,7 @@ CHROMIUM_PATH=/path/to/chromium npm test                             # 15 integr
 | `archive/` | Earlier experiments (a Chrome extension for site audits, a service kit). |
 
 ## Pricing (hosted)
-Free 100 renders/month · Starter $9 for 1,000 · Pro $29 for 5,000 · Business $79 for 25,000. Edit `app/src/config.js` to change.
+RUB: Free 100 renders/month · Starter 790 ₽ for 1,000 · Pro 2 490 ₽ for 5,000 · Business 6 900 ₽ for 25,000. USD: $9 / $29 / $79. Edit `app/src/config.js` to change.
 
 ## License
 MIT for the code in this repository. Chromium is bundled via the Playwright Docker image under its own licenses.

@@ -4,11 +4,16 @@ const path = require('node:path');
 const env = (k, d) => (process.env[k] !== undefined && process.env[k] !== '' ? process.env[k] : d);
 const int = (k, d) => parseInt(env(k, d), 10);
 
+// Prices: minor units (kopecks / cents) per month. CURRENCY=RUB (default, Russian market) or USD.
+const CURRENCY = env('CURRENCY', 'RUB');
+const PRICES = CURRENCY === 'RUB'
+  ? { free: 0, starter: 79000, pro: 249000, business: 690000 }
+  : { free: 0, starter: 900, pro: 2900, business: 7900 };
 const PLANS = {
-  free: { name: 'Free', monthly: 100, priceCents: 0, ratePerMin: 10, concurrency: 1 },
-  starter: { name: 'Starter', monthly: 1000, priceCents: 900, ratePerMin: 60, concurrency: 2 },
-  pro: { name: 'Pro', monthly: 5000, priceCents: 2900, ratePerMin: 120, concurrency: 4 },
-  business: { name: 'Business', monthly: 25000, priceCents: 7900, ratePerMin: 300, concurrency: 8 },
+  free: { name: 'Free', monthly: 100, priceCents: PRICES.free, ratePerMin: 10, concurrency: 1 },
+  starter: { name: 'Starter', monthly: 1000, priceCents: PRICES.starter, ratePerMin: 60, concurrency: 2 },
+  pro: { name: 'Pro', monthly: 5000, priceCents: PRICES.pro, ratePerMin: 120, concurrency: 4 },
+  business: { name: 'Business', monthly: 25000, priceCents: PRICES.business, ratePerMin: 300, concurrency: 8 },
 };
 
 module.exports = {
@@ -23,8 +28,25 @@ module.exports = {
   renderTimeoutMs: int('RENDER_TIMEOUT_MS', 30000),
   maxQueue: int('RENDER_MAX_QUEUE', 50),
   allowPrivateNetwork: env('ALLOW_PRIVATE_NETWORK', '0') === '1',
-  // 'stripe' (needs a Stripe-supported country), 'paddle' (merchant of record, any non-sanctioned country) or 'none'
-  billingProvider: env('BILLING_PROVIDER', env('STRIPE_SECRET_KEY', '') ? 'stripe' : (env('PADDLE_CLIENT_TOKEN', '') ? 'paddle' : 'none')),
+  currency: CURRENCY,
+  siteLang: env('SITE_LANG', 'ru'),
+  legal: {
+    name: env('LEGAL_NAME', ''),          // e.g. ИП Иванов Иван Иванович
+    inn: env('LEGAL_INN', ''),
+    ogrn: env('LEGAL_OGRN', ''),
+    email: env('LEGAL_EMAIL', ''),
+    address: env('LEGAL_ADDRESS', ''),
+  },
+  // 'yookassa' (Russia), 'paddle' (merchant of record, non-sanctioned countries), 'stripe', or 'none'
+  billingProvider: env('BILLING_PROVIDER', env('YOOKASSA_SHOP_ID', '') ? 'yookassa' : (env('STRIPE_SECRET_KEY', '') ? 'stripe' : (env('PADDLE_CLIENT_TOKEN', '') ? 'paddle' : 'none'))),
+  yookassa: {
+    shopId: env('YOOKASSA_SHOP_ID', ''),
+    secretKey: env('YOOKASSA_SECRET_KEY', ''),
+    sendReceipt: env('YOOKASSA_SEND_RECEIPT', '1') === '1',   // 54-ФЗ receipts through YooKassa's fiscalization
+    vatCode: int('YOOKASSA_VAT_CODE', 1),                      // 1 = без НДС (ИП на УСН / самозанятый)
+    autopay: env('YOOKASSA_AUTOPAY', '1') === '1',             // save the card and charge monthly (needs "автоплатежи" enabled in the shop)
+    graceDays: int('BILLING_GRACE_DAYS', 3),
+  },
   paddle: {
     env: env('PADDLE_ENV', 'production'),            // 'sandbox' while testing
     apiKey: env('PADDLE_API_KEY', ''),

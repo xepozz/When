@@ -57,6 +57,23 @@ function open(dbPath) {
       created_at INTEGER NOT NULL
     );
   `);
+  // Additive migrations for older databases
+  const cols = new Set(db.prepare('PRAGMA table_info(users)').all().map((c) => c.name));
+  if (!cols.has('provider')) db.exec("ALTER TABLE users ADD COLUMN provider TEXT");
+  if (!cols.has('paid_until')) db.exec('ALTER TABLE users ADD COLUMN paid_until INTEGER');
+  if (!cols.has('payment_method_id')) db.exec('ALTER TABLE users ADD COLUMN payment_method_id TEXT');
+  if (!cols.has('pending_plan')) db.exec('ALTER TABLE users ADD COLUMN pending_plan TEXT');
+  db.exec(`CREATE TABLE IF NOT EXISTS payments (
+      id TEXT PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      plan TEXT NOT NULL,
+      amount INTEGER NOT NULL,
+      currency TEXT NOT NULL,
+      status TEXT NOT NULL,
+      kind TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL
+    )`);
   return db;
 }
 

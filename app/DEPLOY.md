@@ -1,5 +1,11 @@
 # Deploy RenderKit
 
+## Для рынка РФ: краткий маршрут
+1. **Хостинг в России** (российские карты принимают, задержка до клиентов минимальная): Timeweb Cloud, Selectel, Yandex Cloud, VDSina, reg.ru. Нужен VPS 2–4 ГБ RAM с Ubuntu 24.04 и Docker. Домен .ru у любого регистратора.
+2. Шаги 1–2 ниже (DNS, `docker compose up`). В `.env`: `CURRENCY=RUB`, `SITE_LANG=ru`, реквизиты `LEGAL_*`.
+3. **ЮKassa** (раздел 3c ниже): регистрация магазина, ИП/ООО или самозанятый, чеки 54-ФЗ, автоплатежи.
+4. Проверка: регистрация на сайте, оплата тестовой картой из личного кабинета ЮKassa, тариф в кабинете обновился.
+
 Target: one VPS with 2–4 GB RAM (Hetzner CX22 at ~€4/month handles the Starter/Pro traffic of dozens of customers). Docker Compose runs the app and Caddy (automatic HTTPS).
 
 ## 1. DNS
@@ -21,6 +27,15 @@ Open `https://api.yourdomain.com/health` → `{"ok":true,"browser":true,...}`.
 ## 3. Payments (15 minutes, once)
 
 Pick one provider and set `BILLING_PROVIDER` accordingly.
+
+### 3c. ЮKassa (Россия)
+1. https://yookassa.ru → «Подключить». Варианты: ИП или ООО (любая система налогообложения) либо самозанятый (НПД) — для последнего доступен ограниченный набор способов оплаты, уточните при подключении. Проверка документов занимает 1–3 рабочих дня.
+2. На модерации ЮKassa проверит сайт: должны быть видны реквизиты (подвал), описание услуги и цены (`/pricing`), оферта (`/offer`), политика конфиденциальности (`/privacy`), контакты. Всё это уже на сайте, если заполнены `LEGAL_*` в `.env`.
+3. Личный кабинет → Интеграция → Ключи API: `shopId` → `YOOKASSA_SHOP_ID`, секретный ключ → `YOOKASSA_SECRET_KEY`.
+4. Интеграция → HTTP-уведомления: URL `https://api.ваш-домен.ru/billing/yookassa/webhook`, события `payment.succeeded`, `payment.canceled`, `refund.succeeded`. Уведомления не подписываются; сервис сам перепроверяет каждый платёж запросом к API ЮKassa, поэтому подделать их нельзя.
+5. **Чеки (54-ФЗ).** Для ИП/ООО подключите онлайн-кассу через ЮKassa (Чеки → выбрать партнёра, например «Атол Онлайн» или «Бизнес.Ру») и оставьте `YOOKASSA_SEND_RECEIPT=1`; `YOOKASSA_VAT_CODE=1` для УСН без НДС. Самозанятым касса не нужна: ЮKassa формирует чек в «Мой налог» сама.
+6. **Автопродление.** Напишите в поддержку ЮKassa: «включить автоплатежи (сохранение способа оплаты) для магазина №…». Без этого `YOOKASSA_AUTOPAY=0`: клиент продлевает вручную кнопкой в кабинете, доступ до конца оплаченных 30 дней.
+7. Тест: в личном кабинете ЮKassa включите тестовый магазин, возьмите тестовые ключи и карту `5555 5555 5555 4477`, оплатите тариф на своём сайте, убедитесь, что кабинет показывает тариф и дату «оплачено до».
 
 ### 3a. Paddle (works from any non-sanctioned country; Paddle is the merchant of record and handles VAT/sales tax)
 1. https://paddle.com → create a seller account (business verification takes 1–3 days; you can build with the sandbox meanwhile at https://sandbox-vendors.paddle.com).

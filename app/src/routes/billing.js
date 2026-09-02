@@ -1,6 +1,7 @@
 'use strict';
 const Stripe = require('stripe');
 const paddle = require('../billing/paddle');
+const yookassa = require('../billing/yookassa');
 const { userFromSession } = require('../auth');
 const views = require('../../views');
 
@@ -43,6 +44,11 @@ module.exports = async function billingRoutes(app) {
       });
       return reply.redirect(session.url, 303);
     }
+    if (provider === 'yookassa') {
+      if (!config.yookassa.shopId || !config.yookassa.secretKey) throw err(503, 'Billing is not configured yet (YOOKASSA_SHOP_ID / YOOKASSA_SECRET_KEY missing)');
+      const url = await yookassa.createPayment(db, config, app.fetch, user, plan);
+      return reply.redirect(url, 303);
+    }
     if (provider === 'paddle') {
       const price = config.paddle.prices[plan];
       if (!config.paddle.clientToken || !price) throw err(503, 'Billing is not configured yet (Paddle client token or prices missing)');
@@ -51,8 +57,16 @@ module.exports = async function billingRoutes(app) {
     throw err(503, 'Billing is not configured yet (set BILLING_PROVIDER)');
   });
 
+  // YooKassa has no hosted portal: cancelling means "do not charge again"; access stays until paid_until.
+  app.post('/cancel', async (req, reply) => {
+    const user = requireUser(req);
+    db.prepare('UPDATE users SET payment_method_id = NULL WHERE id = ?').run(user.id);
+    return reply.redirect('/dashboard?canceled=1', 303);
+  });
+
   app.post('/portal', async (req, reply) => {
     const user = requireUser(req);
+    if (provider === 'yookassa') return reply.redirect('/dashboard', 303);
     if (!user.stripe_customer_id) return reply.redirect('/pricing', 303);
     if (provider === 'stripe' && stripe) {
       const session = await stripe.billingPortal.sessions.create({ customer: user.stripe_customer_id, return_url: `${config.appUrl}/dashboard` });
@@ -78,6 +92,15 @@ module.exports = async function billingRoutes(app) {
       if (db.prepare('SELECT 1 FROM stripe_events WHERE id = ?').get(event.id)) return { received: true, duplicate: true };
       db.prepare('INSERT INTO stripe_events (id, type, created_at) VALUES (?, ?, ?)').run(event.id, event.type, Date.now());
       applyStripeEvent(db, config, event, app.log);
+      return { received: true };
+    });
+
+    sub.post('/yookassa/webhook', async (req) => {
+      if (!config.yookassa.shopId) throw err(503, 'YooKassa not configured');
+      let body;
+      try { body = JSON.parse(Buffer.isBuffer(req.body) ? req.body.toString('utf8') : String(req.body || '')); } catch { throw err(400, 'Bad JSON'); }
+      const result = await yookassa.handleNotification(db, config, app.fetch, body);
+      app.log.info({ event: body && body.event, id: body && body.object && body.object.id, result }, 'yookassa notification');
       return { received: true };
     });
 

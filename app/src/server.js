@@ -14,6 +14,7 @@ function build(overrides = {}) {
   app.decorate('config', cfg);
   app.decorate('db', db);
   app.decorate('pool', pool);
+  app.decorate('fetch', overrides.fetch || globalThis.fetch); // injectable for tests
 
   app.register(require('@fastify/cookie'), { secret: cfg.sessionSecret });
   app.register(require('@fastify/formbody'));
@@ -21,7 +22,7 @@ function build(overrides = {}) {
 
   // Same-origin check for browser form posts (cookies are SameSite=Lax; this closes the remaining gap).
   app.addHook('preHandler', async (req, reply) => {
-    if (req.method !== 'POST' || req.url.startsWith('/v1/') || req.url.startsWith('/billing/webhook') || req.url.startsWith('/billing/paddle/webhook')) return;
+    if (req.method !== 'POST' || req.url.startsWith('/v1/') || req.url.includes('/webhook')) return;
     const origin = req.headers.origin || (req.headers.referer ? new URL(req.headers.referer).origin : null);
     if (origin && origin !== new URL(cfg.appUrl).origin && !origin.startsWith('http://localhost') && !origin.startsWith('http://127.0.0.1')) {
       reply.code(403).type('text/html').send(views.error({ config: cfg, status: 403, message: 'Cross-site form submission blocked.' }));

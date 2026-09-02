@@ -1,22 +1,20 @@
-# Launch checklist — RenderKit
+# Запуск — RenderKit на рынке РФ
 
-The product in `app/` is complete and tested. What remains needs accounts in your name.
+Продукт в `app/` готов и протестирован (27 интеграционных тестов, включая оплату ЮKassa, автопродление, возвраты). Ниже то, что требует твоих аккаунтов, и что делать дальше.
 
-## One time (about an hour)
-1. **Domain + VPS.** Any provider with Docker, 2–4 GB RAM. Point `api.yourdomain.com` at it.
-2. **Deploy.** Follow `app/DEPLOY.md` (clone, `.env`, `docker compose up -d`). Check `/health`.
-3. **Payments.** Stripe needs a business in one of its ~47 countries (no CIS countries; UAE yes). Paddle accepts sellers from any country except its sanctions list (Russia and Belarus are on it) and acts as merchant of record, so Kazakhstan, Georgia, Armenia, Serbia, Turkey etc. work. Lemon Squeezy pays out via PayPal/bank in 200+ countries with the same sanctions exclusions. If you are in Russia or Belarus, none of the Western providers will onboard you directly: the working routes are a legal entity or trusted partner in a supported country (then Paddle), or a Russian provider (YooKassa/CloudPayments) for Russian customers only. The code supports Stripe and Paddle out of the box (`BILLING_PROVIDER`); see `app/DEPLOY.md` step 3.
-4. **Search Console.** Add the domain, submit `/sitemap.xml`.
-5. **Listings (free, one form each):** RapidAPI (publish the two endpoints with the free plan), Product Hunt (optional), the GitHub "awesome-pdf"/"awesome-screenshot-api" lists via PR.
+## Один раз (~2 часа, из них час — ожидание проверок)
+1. **Статус продавца.** ИП на УСН — самый простой вариант для ЮKassa и для закрывающих документов юрлицам. Самозанятый тоже подключается, но с ограничениями по способам оплаты.
+2. **Домен .ru + VPS в РФ** (Timeweb Cloud / Selectel / Yandex Cloud, 2–4 ГБ). `app/DEPLOY.md`, разделы 1–2.
+3. **ЮKassa**: подключение магазина, ключи, HTTP-уведомления, чеки, автоплатежи. `app/DEPLOY.md`, раздел 3c. Тестовая оплата тестовой картой.
+4. **Реквизиты в `.env`** (`LEGAL_*`): подвал, оферта и политика заполняются сами. Прочитай `/offer` и `/privacy` один раз глазами.
+5. **Яндекс Вебмастер + Google Search Console**: добавить сайт, отправить `/sitemap.xml`.
+6. **SDK**: `npm publish` в `sdk/node`, `sdk/php` на Packagist (нужен отдельный репозиторий с composer.json в корне).
 
-## What the code does on its own afterwards
-- Signups, API keys, quotas, rate limits, Stripe upgrades/downgrades/cancellations via webhooks.
-- Free tools pages and docs pages are the inbound funnel (they target the searches people type when they need a PDF/screenshot service).
-- Health endpoint for uptime monitoring; SQLite file is the only state to back up.
+## Каналы продаж (тексты готовы в `marketing/ru/`)
+Порядок и сроки — `marketing/ru/00-план.md`. Первые три дают больше всего: Habr-статья, Telegram-чаты PHP/Laravel/Yii/Symfony, vc.ru.
 
-## Monthly (15 minutes)
-- `docker compose pull && docker compose up -d --build` after bumping `playwright-core` and the Dockerfile base tag together (they must match).
-- Look at `renders` failures in the dashboard DB for pages that time out; raise `RENDER_TIMEOUT_MS` if needed.
+## Что дальше делает код сам
+Регистрации, ключи, квоты, лимиты, оплата, чеки, автопродление раз в 30 дней, отключение автопродления, даунгрейд через 3 дня после неудачного списания, возвраты по уведомлению. Бесплатные инструменты и документация — входящий поток по запросам «html в pdf», «скриншот сайта api», «pdf api php».
 
-## Honest expectations
-Competitors exist (ApiFlash, ScreenshotOne, Urlbox, PDFShift, DocRaptor, Browserless). The market is real and usage-based, which is why solo operators survive in it; the way in is price, reliability and being findable for the exact searches above. Revenue depends on those searches landing, and nobody can promise a timeline.
+## Ожидания
+Рынок РФ для dev-API: платящих меньше, чем в мире, но и конкурентов на русском языке с рублёвой оплатой и чеками почти нет (зарубежные API российскими картами не оплатить). Первые бесплатные регистрации — в дни после публикаций, первые оплаты — когда у кого-то закончатся 100 бесплатных рендеров в проде, обычно 2–6 недель.

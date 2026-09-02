@@ -13,9 +13,9 @@ module.exports = async function dashboardRoutes(app) {
   app.post('/signup', async (req, reply) => {
     const email = String(req.body?.email || '').trim().toLowerCase();
     const password = String(req.body?.password || '');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return reply.code(400).type('text/html').send(views.signup({ config, error: 'Enter a valid email address.', email }));
-    if (password.length < 8) return reply.code(400).type('text/html').send(views.signup({ config, error: 'Password must be at least 8 characters.', email }));
-    if (auth.findUserByEmail(db, email)) return reply.code(400).type('text/html').send(views.signup({ config, error: 'An account with this email already exists. Log in instead.', email }));
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return reply.code(400).type('text/html').send(views.signup({ config, error: views.t(config).e_email, email }));
+    if (password.length < 8) return reply.code(400).type('text/html').send(views.signup({ config, error: views.t(config).e_pass, email }));
+    if (auth.findUserByEmail(db, email)) return reply.code(400).type('text/html').send(views.signup({ config, error: views.t(config).e_exists, email }));
     const { userId, apiKey } = auth.createUser(db, email, password);
     reply.setCookie('sid', auth.createSession(db, userId), cookieOpts);
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
@@ -27,7 +27,7 @@ module.exports = async function dashboardRoutes(app) {
     const email = String(req.body?.email || '');
     const password = String(req.body?.password || '');
     const user = auth.findUserByEmail(db, email);
-    if (!user || !auth.verifyPassword(password, user.password_hash)) return reply.code(401).type('text/html').send(views.login({ config, error: 'Wrong email or password.', email }));
+    if (!user || !auth.verifyPassword(password, user.password_hash)) return reply.code(401).type('text/html').send(views.login({ config, error: views.t(config).e_login, email }));
     reply.setCookie('sid', auth.createSession(db, user.id), cookieOpts);
     return reply.redirect('/dashboard', 303);
   });
@@ -41,14 +41,14 @@ module.exports = async function dashboardRoutes(app) {
   app.get('/dashboard', async (req, reply) => {
     const user = currentUser(req);
     if (!user) return reply.redirect('/login', 303);
-    return reply.type('text/html').send(renderDashboard(app, user, { upgraded: req.query.upgraded === '1' }));
+    return reply.type('text/html').send(renderDashboard(app, user, { upgraded: req.query.upgraded === '1', canceled: req.query.canceled === '1' }));
   });
 
   app.post('/dashboard/keys', async (req, reply) => {
     const user = currentUser(req);
     if (!user) return reply.redirect('/login', 303);
     const count = db.prepare('SELECT COUNT(*) c FROM api_keys WHERE user_id = ? AND revoked_at IS NULL').get(user.id).c;
-    if (count >= 10) return reply.type('text/html').send(renderDashboard(app, user, { error: 'Maximum of 10 active keys.' }));
+    if (count >= 10) return reply.type('text/html').send(renderDashboard(app, user, { error: views.t(config).max_keys }));
     const key = auth.newApiKey();
     const name = String(req.body?.name || 'key').slice(0, 40) || 'key';
     db.prepare('INSERT INTO api_keys (user_id, key_hash, prefix, name, created_at) VALUES (?, ?, ?, ?, ?)').run(user.id, key.hash, key.prefix, name, Date.now());
@@ -73,6 +73,8 @@ function renderDashboard(app, user, extra = {}) {
     recent: usage.recentRenders(db, user.id, 15),
     series: usage.dailySeries(db, user.id, 30),
     billingReady: config.billingProvider !== 'none',
+    provider: config.billingProvider,
+    payments: db.prepare('SELECT id, plan, amount, currency, status, kind, created_at FROM payments WHERE user_id = ? ORDER BY created_at DESC LIMIT 10').all(user.id),
     ...extra,
   });
 }
