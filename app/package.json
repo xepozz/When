@@ -1,0 +1,27 @@
+{
+  "name": "renderkit",
+  "version": "0.1.0",
+  "description": "RenderKit \u2014 HTML/URL to PDF and screenshot API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/main.js",
+    "test": "node --test test/",
+    "dev": "node --watch src/main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cookie": "^11.1.2",
+    "@fastify/formbody": "^9.0.0",
+    "@fastify/rate-limit": "^11.2.0",
+    "@fastify/static": "^10.1.3",
+    "fastify": "^5.12.1",
+    "playwright-core": "^1.56.1",
+    "stripe": "^22.6.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=22.5"
+  }
+}

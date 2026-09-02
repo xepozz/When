@@ -1,21 +1,22 @@
-# Launch checklist — SiteSweep on the Chrome Web Store
+# Launch checklist — RenderKit
 
-Everything below the first section is done. The first section is the part only an account holder can do; it takes about 40 minutes once, then the store sells on its own.
+The product in `app/` is complete and tested. What remains needs accounts in your name.
 
-## Your part (one time)
-1. **ExtensionPay** (payments; 5% fee, Stripe underneath): sign up at https://extensionpay.com, register an extension with the id `sitesweep` (or change `EXTPAY_ID` in `extension/config.js` to the id you pick), connect Stripe, add subscription plans: $9/month and $59/year.
-2. **Chrome Web Store developer account**: https://chrome.google.com/webstore/devconsole — one-time $5 fee.
-3. Run `./build.sh` → upload `dist/sitesweep-1.0.0.zip`.
-4. Fill the listing from `store/listing.md` (name, summary, description, category, single purpose, permission justifications, data disclosures). Upload `store/screenshots/*.png`.
-5. Privacy policy URL: enable GitHub Pages for this repo (Settings → Pages → folder `/docs`) and use `https://xepozz.github.io/When/privacy.html`. Put your contact email into `docs/privacy.html` and `store/privacy-policy.md` first.
-6. Submit for review. Typical review: 1–3 business days.
+## One time (about an hour)
+1. **Domain + VPS.** Any provider with Docker, 2–4 GB RAM. Point `api.yourdomain.com` at it.
+2. **Deploy.** Follow `app/DEPLOY.md` (clone, `.env`, `docker compose up -d`). Check `/health`.
+3. **Stripe.** Create the three monthly prices, the webhook, and the customer portal as in `app/DEPLOY.md` step 3. Do one test purchase with a test card.
+4. **Search Console.** Add the domain, submit `/sitemap.xml`.
+5. **Listings (free, one form each):** RapidAPI (publish the two endpoints with the free plan), Product Hunt (optional), the GitHub "awesome-pdf"/"awesome-screenshot-api" lists via PR.
 
-## Already done
-- Extension built, no build step, no bundler: `extension/`.
-- Automated end-to-end test: `xvfb-run -a node tests/e2e.js` (start `node tests/testsite/server.js` first). It loads the extension into Chromium, audits a local site with seeded problems and asserts broken links, redirects, missing alt, unlabeled inputs, missing lang, low contrast, missing/duplicate titles, free-plan cap, Pro exports.
-- Store copy, permission justifications, data disclosures, privacy policy: `store/`.
-- Screenshots: `store/screenshots/` (regenerate with `xvfb-run -a node store/screenshots.js`).
+## What the code does on its own afterwards
+- Signups, API keys, quotas, rate limits, Stripe upgrades/downgrades/cancellations via webhooks.
+- Free tools pages and docs pages are the inbound funnel (they target the searches people type when they need a PDF/screenshot service).
+- Health endpoint for uptime monitoring; SQLite file is the only state to back up.
 
-## After approval (10 minutes a month)
-- Reply to store reviews that report bugs; ignore the rest.
-- When axe-core releases: `npm view axe-core version`, copy the new `axe.min.js` into `extension/`, bump `version` in `extension/manifest.json`, `./build.sh`, upload.
+## Monthly (15 minutes)
+- `docker compose pull && docker compose up -d --build` after bumping `playwright-core` and the Dockerfile base tag together (they must match).
+- Look at `renders` failures in the dashboard DB for pages that time out; raise `RENDER_TIMEOUT_MS` if needed.
+
+## Honest expectations
+Competitors exist (ApiFlash, ScreenshotOne, Urlbox, PDFShift, DocRaptor, Browserless). The market is real and usage-based, which is why solo operators survive in it; the way in is price, reliability and being findable for the exact searches above. Revenue depends on those searches landing, and nobody can promise a timeline.

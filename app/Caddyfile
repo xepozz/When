@@ -1,0 +1,9 @@
+# Replace with your domain. Caddy provisions TLS automatically.
+{$DOMAIN:localhost} {
+    encode gzip
+    reverse_proxy app:3000 {
+        transport http {
+            read_timeout 90s
+        }
+    }
+}
