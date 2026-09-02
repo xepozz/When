@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upgrade Sprint</title>
+<meta name="description" content="Fixed-price upgrades for legacy PHP and Yii apps: 48-hour audit for $490, upgrade sprint from $2,900. Free 60-second scan first.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --ink:#151C23; --muted:#5A6674; --line:#D5DBE1;
+  --accent:#0B7A6A; --accent-ink:#FFFFFF; --accent-soft:#DDF1EC; --warn:#B86E0E; --warn-soft:#F8EBD6;
+  --term-bg:#151C23; --term-ink:#DCE4EA; --term-dim:#8A98A5; --term-ok:#5FD3B9; --term-warn:#F0B35C;
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1418; --surface:#151D23; --ink:#E5EAEE; --muted:#98A5B0; --line:#26313A;
+    --accent:#35C1A7; --accent-ink:#0B1A17; --accent-soft:#12302B; --warn:#E39A3B; --warn-soft:#3A2A12;
+    --term-bg:#0A0F13; --term-ink:#DCE4EA; --term-dim:#7C8A97; --term-ok:#5FD3B9; --term-warn:#F0B35C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1418; --surface:#151D23; --ink:#E5EAEE; --muted:#98A5B0; --line:#26313A;
+  --accent:#35C1A7; --accent-ink:#0B1A17; --accent-soft:#12302B; --warn:#E39A3B; --warn-soft:#3A2A12;
+  --term-bg:#0A0F13; --term-ink:#DCE4EA; --term-dim:#7C8A97; --term-ok:#5FD3B9; --term-warn:#F0B35C;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:var(--display);line-height:1.05;letter-spacing:-0.01em;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.4rem,5.2vw,4.2rem);font-weight:800}
+h2{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:700}
+h3{font-size:1.2rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.prose{max-width:66ch}
+code,pre{font-family:var(--mono)}
+code{font-size:.9em;background:var(--accent-soft);padding:.1em .35em;border-radius:3px}
+
+/* nav */
+nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 0}
+.brand{font-family:var(--display);font-weight:800;font-size:1.15rem;text-decoration:none;color:var(--ink)}
+.brand span{color:var(--accent)}
+nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0}
+nav ul a{color:var(--muted);text-decoration:none;font-size:.95rem}
+nav ul a:hover{color:var(--ink)}
+@media (max-width:640px){nav ul{display:none}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:6px;font-weight:600;text-decoration:none;font-size:1rem;border:1.5px solid transparent;font-family:var(--body);cursor:pointer}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-ghost{border-color:var(--line);color:var(--ink);background:var(--surface)}
+.btn-ghost:hover{border-color:var(--ink)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center;padding:48px 0 64px}
+.hero .lead{font-size:1.2rem;color:var(--muted);margin-top:20px;max-width:52ch}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.hero .fine{margin-top:16px;font-size:.9rem;color:var(--muted)}
+@media (max-width:900px){.hero{grid-template-columns:1fr;gap:32px}}
+
+.term{background:var(--term-bg);color:var(--term-ink);border-radius:10px;padding:18px 20px;font-family:var(--mono);font-size:.8rem;line-height:1.5;overflow-x:auto;box-shadow:0 20px 50px -30px rgba(0,0,0,.5)}
+.term .bar{display:flex;gap:6px;margin-bottom:14px}
+.term .bar i{width:10px;height:10px;border-radius:50%;background:var(--term-dim);opacity:.6;display:block}
+.term pre{margin:0;white-space:pre}
+.term .d{color:var(--term-dim)} .term .ok{color:var(--term-ok)} .term .w{color:var(--term-warn)}
+
+/* sections */
+section{padding:64px 0;border-top:1px solid var(--line)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:32px;margin-bottom:36px;align-items:start}
+.sec-head .sub{color:var(--muted);max-width:60ch}
+@media (max-width:800px){.sec-head{grid-template-columns:1fr;gap:12px}}
+
+/* symptoms */
+.symptoms{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 32px}
+.symptoms li{list-style:none;padding-left:26px;position:relative}
+.symptoms li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border:2px solid var(--warn);border-radius:2px}
+.symptoms ul{margin:0;padding:0;display:contents}
+.symptoms b{display:block;font-weight:600}
+.symptoms span{color:var(--muted);font-size:.95rem}
+@media (max-width:800px){.symptoms{grid-template-columns:1fr}}
+
+/* ladder table */
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+.tablewrap{overflow-x:auto}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.num,th.num{font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:.9rem;white-space:nowrap}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-family:var(--mono);font-size:.72rem;letter-spacing:.04em}
+.pill-warn{background:var(--warn-soft);color:var(--warn)}
+.pill-ok{background:var(--accent-soft);color:var(--accent)}
+
+/* offers */
+.offers{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.offers table{font-size:1rem}
+.offers th{background:var(--bg)}
+.offers td:first-child{font-family:var(--display);font-weight:700;font-size:1.1rem;white-space:nowrap}
+.offers .price{font-family:var(--display);font-weight:800;font-size:1.5rem;letter-spacing:-.01em;white-space:nowrap}
+.offers .price small{display:block;font-family:var(--body);font-weight:400;font-size:.85rem;color:var(--muted);letter-spacing:0}
+.offers tr.featured td{background:var(--accent-soft)}
+.offers ul{margin:6px 0 0;padding-left:18px;color:var(--muted);font-size:.95rem}
+.offers ul li+li{margin-top:4px}
+.offers td .btn{margin-top:10px;padding:9px 14px;font-size:.92rem}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;counter-reset:step}
+.steps > div{position:relative;padding-top:14px;border-top:2px solid var(--line)}
+.steps > div::before{counter-increment:step;content:"Step " counter(step);font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.steps h3{margin:8px 0 8px}
+.steps p{color:var(--muted);font-size:.97rem}
+@media (max-width:800px){.steps{grid-template-columns:1fr}}
+
+/* scan block */
+.scan{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.scan pre.cmd{background:var(--term-bg);color:var(--term-ink);padding:16px 18px;border-radius:8px;font-size:.85rem;overflow-x:auto;margin:16px 0 0}
+.scan ul{margin:16px 0 0;padding-left:20px;color:var(--muted)}
+@media (max-width:800px){.scan{grid-template-columns:1fr}}
+
+/* about */
+.about{display:grid;grid-template-columns:1fr 1.4fr;gap:40px;align-items:start}
+.about .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px}
+.about .card .name{font-family:var(--display);font-weight:800;font-size:1.4rem}
+.about .card .role{color:var(--muted);margin-top:4px}
+.about .card ul{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.about .card li{display:flex;gap:10px;align-items:baseline}
+.about .card li::before{content:"—";color:var(--accent);font-family:var(--mono)}
+.about .prose p+p{margin-top:14px}
+@media (max-width:800px){.about{grid-template-columns:1fr}}
+
+/* faq */
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:28px 48px}
+.faq h3{font-size:1.05rem;margin-bottom:6px}
+.faq p{color:var(--muted);font-size:.97rem}
+@media (max-width:800px){.faq{grid-template-columns:1fr}}
+
+/* final cta */
+.final{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:40px;display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:center}
+.final .cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end}
+@media (max-width:800px){.final{grid-template-columns:1fr}.final .cta{justify-content:flex-start}}
+
+footer{padding:32px 0 48px;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <a class="brand" href="#top">Upgrade<span>Sprint</span></a>
+  <ul>
+    <li><a href="#scan">Free scan</a></li>
+    <li><a href="#offers">Pricing</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#about">Who</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+</nav>
+
+<header class="hero" id="top">
+  <div>
+    <p class="eyebrow">Legacy PHP · Yii 1.1 · Yii 2 · fixed price</p>
+    <h1 style="margin-top:14px">Your old PHP app on PHP 8.4 in three weeks. Price agreed before work starts.</h1>
+    <p class="lead">A 48-hour written audit for $490 tells you every blocker and the exact cost. The upgrade sprint, from $2,900, ships it. No hourly meter, no hire.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="{{PAY_LINK_AUDIT}}">Book the $490 audit</a>
+      <a class="btn btn-ghost" href="#scan">Run the free scan first</a>
+    </div>
+    <p class="fine">Audit fee is credited to the sprint. If the audit does not give you an actionable plan, it is refunded.</p>
+  </div>
+  <div class="term" aria-label="Sample output of the free scan">
+    <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="d">$ php scan.php ./shop</span>
+== Legacy PHP scan ==
+Framework:       <span class="w">Yii 1.1 1.1.14</span>
+PHP constraint:  <span class="w">&gt;=5.4</span>   platform pin: 5.6.40
+Source files:    1,312 PHP files, 187,402 lines
+Test files:      0
+Dependencies:    38 prod (lock updated <span class="w">2,742 days ago</span>)
+
+Deprecated / removed constructs:
+  mysql_*                                  143
+  each()                                    12
+  implicit nullable (Type $x = null)        58
+  ${var} string interpolation                9
+  create_function                            3
+
+Abandoned / replaced packages:
+  swiftmailer/swiftmailer v5.4.12 → symfony/mailer
+  phpoffice/phpexcel 1.8.2 → phpoffice/phpspreadsheet
+
+Upgrade risk: <span class="w">9/10 (HIGH)</span>
+  - PHP constraint targets end-of-life versions
+  - Yii 1.1.14 predates PHP 8 fixes (1.1.25+)
+  - No test files found
+<span class="ok">Next step: paste this output into an email.</span></pre>
+  </div>
+</header>
+
+<section id="signs">
+  <div class="sec-head">
+    <h2>You already know the app. These are the symptoms.</h2>
+    <p class="sub">Every upgrade we do starts with one of these sentences from the client.</p>
+  </div>
+  <div class="symptoms">
+    <ul>
+      <li><b>"The host is dropping PHP 7."</b><span>Or the security audit flagged an end-of-life runtime and gave you a date.</span></li>
+      <li><b>"The person who wrote it left."</b><span>Nobody on the team wants to open it; every change is a risk.</span></li>
+      <li><b>"We've been trying to hire a Yii developer."</b><span>For months. For a job that is really a three-week project.</span></li>
+      <li><b>"composer update breaks everything."</b><span>So it hasn't been run since 2019 and the lock file is a museum.</span></li>
+      <li><b>"It works, so we don't touch it."</b><span>Until a library, a payment gateway or an OS package stops supporting your PHP.</span></li>
+      <li><b>"There are no tests."</b><span>And you are not sure what the cron jobs do anymore.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="ladder">
+  <div class="sec-head">
+    <h2>Where the clock stands</h2>
+    <p class="sub">Security fixes stop on these dates. After that, every vulnerability found in the runtime is yours to live with.</p>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Runtime / framework</th><th class="num">Security support ends</th><th>Status</th><th>What it means for you</th></tr></thead>
+    <tbody>
+      <tr><td>PHP 5.6</td><td class="num">2018-12-31</td><td><span class="pill pill-warn">EOL</span></td><td>Modern libraries will not install; most hosts refuse it.</td></tr>
+      <tr><td>PHP 7.4</td><td class="num">2022-11-28</td><td><span class="pill pill-warn">EOL</span></td><td>The most common "still fine" version we see. It is not fine.</td></tr>
+      <tr><td>PHP 8.0</td><td class="num">2023-11-26</td><td><span class="pill pill-warn">EOL</span></td><td>Same story, two years later.</td></tr>
+      <tr><td>PHP 8.1</td><td class="num">2025-12-31</td><td><span class="pill pill-warn">EOL</span></td><td>Recently ended. Audits will start flagging it now.</td></tr>
+      <tr><td>PHP 8.2</td><td class="num">2026-12-31</td><td><span class="pill pill-ok">security only</span></td><td>Not a target. Skipping to 8.4 costs the same.</td></tr>
+      <tr><td>PHP 8.4</td><td class="num">2028-12-31</td><td><span class="pill pill-ok">active</span></td><td>Our target. Four years of runway.</td></tr>
+      <tr><td>Yii 1.1</td><td class="num">2026-12-31</td><td><span class="pill pill-warn">maintenance only</span></td><td>Feature-frozen since 2015; end of life this December. PHP 8 compatibility fixes exist from 1.1.25 (PHP 8.0) and 1.1.28 (PHP 8.2). Most apps we see are on 1.1.14–1.1.20.</td></tr>
+      <tr><td>Yii 2.0</td><td class="num">2026-11-23</td><td><span class="pill pill-warn">security only</span></td><td>Security fixes end this November, end of life 2027-11-23. Get to the latest 2.0.x now; plan the Yii 3 move on a care plan.</td></tr>
+      <tr><td>Yii 2 &lt; 2.0.45</td><td class="num">—</td><td><span class="pill pill-warn">no PHP 8.1 support</span></td><td>Bump to the current 2.0.x release; usually painless once the app's own code is fixed.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="scan">
+  <div class="scan">
+    <div>
+      <p class="eyebrow">Step 0 · free</p>
+      <h2 style="margin-top:10px">Run the scan. Send the output. Get a 15-minute read.</h2>
+      <p class="prose" style="margin-top:14px;color:var(--muted)">One PHP file, read-only, sends nothing anywhere. It prints your framework and PHP versions, every deprecated or removed construct with counts, abandoned packages, lock-file age, whether tests exist, and an upgrade-risk score. Paste the output into an email and you get an honest reply on what the upgrade involves. No account, no call required.</p>
+      <pre class="cmd">curl -s https://raw.githubusercontent.com/xepozz/When/main/tools/scan.php \
+  | php -- /path/to/your/app</pre>
+      <p style="margin-top:12px;font-size:.9rem;color:var(--muted)">Prefer to read it first? <a href="https://github.com/xepozz/When/blob/main/tools/scan.php">Source on GitHub</a> · about 350 lines.</p>
+    </div>
+    <div>
+      <h3>What it checks</h3>
+      <ul>
+        <li>Framework detection: Yii 1.1 (vendored or composer), Yii 2, Yii 3, Laravel, Symfony, CakePHP, CodeIgniter, Slim, Zend/Laminas, WordPress</li>
+        <li>Removed functions: <code>mysql_*</code>, <code>each()</code>, <code>create_function</code>, <code>ereg</code>, <code>mcrypt_*</code>, <code>utf8_encode</code>, <code>strftime</code></li>
+        <li>PHP 8.4 deprecations: implicit nullable parameters, <code>${var}</code> interpolation, PHP 4 constructors, call-time pass-by-reference</li>
+        <li>Abandoned packages with their replacements, composer.lock age, PHP constraint and platform pin</li>
+        <li>Smells that set the price: <code>eval</code>, <code>global</code>, SQL strings with variables, closing tags, short open tags</li>
+        <li>Test files present, CI and Docker present, largest files</li>
+      </ul>
+      <p style="margin-top:16px"><a class="btn btn-ghost" href="mailto:{{YOUR_EMAIL}}?subject=Legacy%20scan%20output">Email the output</a></p>
+    </div>
+  </div>
+</section>
+
+<section id="offers">
+  <div class="sec-head">
+    <h2>Three products, one ladder</h2>
+    <p class="sub">Each step pays for the next. You never commit to the big number before you have seen the plan.</p>
+  </div>
+  <div class="offers tablewrap">
+  <table>
+    <thead><tr><th>Product</th><th>Price</th><th>Timeline</th><th>You get</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Upgrade Audit</td>
+        <td><span class="price">$490<small>fixed · credited to the sprint</small></span></td>
+        <td>48 hours after repo access</td>
+        <td>Written report: every blocker for PHP 8.4 and the current framework, dependency replacements, risk map, week-by-week plan, regression checklist, fixed sprint quote valid 30 days.
+          <a class="btn btn-primary" href="{{PAY_LINK_AUDIT}}">Book the audit</a></td>
+      </tr>
+      <tr class="featured">
+        <td>Upgrade Sprint</td>
+        <td><span class="price">from $2,900<small>fixed · quoted in the audit</small></span></td>
+        <td>2–3 weeks</td>
+        <td>
+          <ul>
+            <li>App runs on PHP 8.4 and the current framework release</li>
+            <li>Dependencies upgraded or replaced; deprecations removed</li>
+            <li>Docker dev environment and CI pipeline added</li>
+            <li>Regression pass on your key flows; deploy support on cut-over day</li>
+            <li>30 days of fixes after go-live</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>Care Plan</td>
+        <td><span class="price">$1,500<small>per month · cancel any time</small></span></td>
+        <td>Ongoing</td>
+        <td>Up to 10 hours a month on the same app: framework and security updates, small features, on-call for the legacy parts left behind. Offered at sprint hand-off.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="margin-top:14px;font-size:.9rem;color:var(--muted)">Sprint pricing rule of thumb: base $2,900 for up to 30k lines with tests; larger codebases, no tests, or Yii 1.1 framework work add fixed increments stated in the audit. Card and bank transfer accepted. Invoices from a registered business.</p>
+</section>
+
+<section id="process">
+  <div class="sec-head">
+    <h2>How a sprint runs</h2>
+    <p class="sub">Numbered because the order matters: nothing touches production until week three.</p>
+  </div>
+  <div class="steps">
+    <div>
+      <h3>Boot on 8.4</h3>
+      <p>Docker environment on PHP 8.4. Automated rewrites for the mechanical changes (Rector). Fatal errors on boot fixed by hand: removed functions, constructors, framework patches. Static analysis and lint in CI, green.</p>
+    </div>
+    <div>
+      <h3>Dependencies and deprecations</h3>
+      <p>Abandoned packages replaced, the rest upgraded. Deprecation log driven to zero on the key flows. Framework bumped to the current release. Staging on 8.4 handed to your team with the regression checklist.</p>
+    </div>
+    <div>
+      <h3>Cut over</h3>
+      <p>Fixes from staging feedback. Production switch on a day you pick, with rollback ready. Thirty days of fixes included. Care plan offered if you want the app kept current from here on.</p>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about">
+    <div class="card">
+      <p class="name">{{YOUR_NAME}}</p>
+      <p class="role">{{CREDENTIAL}} · PHP since {{YEAR}}</p>
+      <ul>
+        <li>Yii core team member: the framework your app runs on is one I help maintain</li>
+        <li>Open-source author; code and history public on <a href="https://github.com/xepozz">GitHub</a></li>
+        <li>Upgrades delivered with AI-assisted tooling for the mechanical work, reviewed by hand for the rest</li>
+      </ul>
+    </div>
+    <div class="prose">
+      <h2>Why a fixed price is possible</h2>
+      <p style="margin-top:14px;color:var(--muted)">Legacy upgrades feel unpredictable because nobody measures them before starting. The scan and the audit measure them: how many removed calls, how many abandoned packages, how old the framework, whether tests exist. Those numbers set the price, and the same numbers are checked off at the end.</p>
+      <p style="color:var(--muted)">The mechanical part of an upgrade, the hundreds of small rewrites, is done with tooling and AI assistance and then reviewed. The judgment part, which is the framework internals, the data layer and the cut-over, is done by someone who has read the framework source. That combination is why a job that gets quoted as "hire a senior for six months" fits in three weeks.</p>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="sec-head">
+    <h2>Questions clients ask before paying</h2>
+    <p class="sub">Answered straight.</p>
+  </div>
+  <div class="faq">
+    <div><h3>Do you need production access?</h3><p>No. Read-only access to the repository, or a zip, and a database schema dump. Cut-over on the last day is done with your team on a call.</p></div>
+    <div><h3>What if the audit says the app should be rewritten instead?</h3><p>Then the audit says so, with the reasons and a scope for a rewrite. You keep the audit; the sprint is not sold.</p></div>
+    <div><h3>Yii 1.1 to Yii 2 or Yii 3, not just PHP 8?</h3><p>Migrating frameworks is a rewrite of roughly 40% of the code. The audit quotes it separately if you want it; most clients take the PHP 8.4 sprint first so the app is safe, then migrate module by module on a care plan.</p></div>
+    <div><h3>Laravel, Symfony, raw PHP?</h3><p>Yes. The scan detects them and the same process applies. Yii is where the deepest experience is.</p></div>
+    <div><h3>Who does the work?</h3><p>One person, named above, with AI tooling for the mechanical rewrites. No hand-off to a team you have not met.</p></div>
+    <div><h3>How do we pay?</h3><p>Audit by card at booking. Sprint 50% at start, 50% at production go-live. Care plan monthly. Invoices for every payment.</p></div>
+  </div>
+</section>
+
+<section id="book">
+  <div class="final">
+    <div>
+      <h2>Start with the numbers</h2>
+      <p style="margin-top:10px;color:var(--muted)">Run the scan today, get the free read tomorrow, have a fixed quote in writing within 48 hours of booking the audit.</p>
+    </div>
+    <div class="cta">
+      <a class="btn btn-primary" href="{{PAY_LINK_AUDIT}}">Book the $490 audit</a>
+      <a class="btn btn-ghost" href="mailto:{{YOUR_EMAIL}}?subject=Legacy%20scan%20output">Send scan output</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>{{YOUR_NAME}} · {{YOUR_EMAIL}}</span>
+  <span><a href="https://github.com/xepozz/When">Scan source on GitHub</a></span>
+</footer>
+</div>
+</body>
+</html>
