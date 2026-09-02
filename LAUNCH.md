@@ -1,37 +1,21 @@
-# Launch checklist — from this repo to the first invoice
+# Launch checklist — SiteSweep on the Chrome Web Store
 
-Only the steps marked **(you)** need a human with accounts and a legal identity. Everything else is already in the repo.
+Everything below the first section is done. The first section is the part only an account holder can do; it takes about 40 minutes once, then the store sells on its own.
 
-## 0. Facts to confirm before publishing (10 min)
-- [ ] **(you)** The landing and the emails say "Yii core team member". Keep it only if it is literally true and public (Yii team page). Otherwise change to the accurate wording in `docs/index.html` (search for `core team`) and `outreach/*`.
-- [ ] **(you)** Replace placeholders: `{{YOUR_NAME}}`, `{{YOUR_EMAIL}}`, `{{BOOKING_LINK}}`, `{{PAY_LINK_AUDIT}}` in `docs/index.html` and `outreach/*`. (`grep -rn "{{" docs outreach` shows every spot.)
+## Your part (one time)
+1. **ExtensionPay** (payments; 5% fee, Stripe underneath): sign up at https://extensionpay.com, register an extension with the id `sitesweep` (or change `EXTPAY_ID` in `extension/config.js` to the id you pick), connect Stripe, add subscription plans: $9/month and $59/year.
+2. **Chrome Web Store developer account**: https://chrome.google.com/webstore/devconsole — one-time $5 fee.
+3. Run `./build.sh` → upload `dist/sitesweep-1.0.0.zip`.
+4. Fill the listing from `store/listing.md` (name, summary, description, category, single purpose, permission justifications, data disclosures). Upload `store/screenshots/*.png`.
+5. Privacy policy URL: enable GitHub Pages for this repo (Settings → Pages → folder `/docs`) and use `https://xepozz.github.io/When/privacy.html`. Put your contact email into `docs/privacy.html` and `store/privacy-policy.md` first.
+6. Submit for review. Typical review: 1–3 business days.
 
-## 1. Money rail (20 min)
-- [ ] **(you)** Stripe → Payment Links → new link: product "Upgrade Audit", $490 one-time, collect email, success URL = landing `#booked`. Paste the URL into `{{PAY_LINK_AUDIT}}`.
-- [ ] **(you)** Sprints and care plans are invoiced from Stripe Invoicing after the audit (no link needed).
-- [ ] **(you)** RU clients: your usual invoicing route.
+## Already done
+- Extension built, no build step, no bundler: `extension/`.
+- Automated end-to-end test: `xvfb-run -a node tests/e2e.js` (start `node tests/testsite/server.js` first). It loads the extension into Chromium, audits a local site with seeded problems and asserts broken links, redirects, missing alt, unlabeled inputs, missing lang, low contrast, missing/duplicate titles, free-plan cap, Pro exports.
+- Store copy, permission justifications, data disclosures, privacy policy: `store/`.
+- Screenshots: `store/screenshots/` (regenerate with `xvfb-run -a node store/screenshots.js`).
 
-## 2. Publish (10 min)
-- [ ] **(you)** GitHub → repo Settings → Pages → Source: branch `main` (or this branch), folder `/docs`. URL becomes `https://xepozz.github.io/When/`.
-- [ ] **(you)** Optional: custom domain later. Do not wait for it.
-- [ ] Raw script URL for the free scan: `https://raw.githubusercontent.com/xepozz/When/<branch>/tools/scan.php` — the landing already uses `main`; adjust if you publish from another branch.
-
-## 3. Day-1 outreach (60 min)
-- [ ] **(you)** Post `outreach/community-posts.md` → Telegram (Yii RU chats), Yii forum "Developers for hire".
-- [ ] **(you)** Reply to forum threads with `outreach/forum-replies.md` (#1 Softvery is the best lead).
-- [ ] **(you)** Send 10 cold emails from `outreach/cold-email.md` to `leads/leads.md` section A and B.
-- [ ] **(you)** LinkedIn post (`outreach/community-posts.md`, LinkedIn variant).
-
-## 4. When a scan output arrives
-1. Run `php tools/scan.php` yourself on the repo if they give access; otherwise use their pasted output.
-2. Fill `delivery/audit-report-template.md` sections 1–3 as the "free 15-minute read" (send only the summary, keep the plan for the paid audit).
-3. Send the payment link. Audit clock starts at payment.
-
-## 5. Delivering an audit in 48 h
-1. Clone → `php tools/scan.php` → Rector dry-run (`vendor/bin/rector process --dry-run` with `PHP_84` set) → PHPStan level 0 on PHP 8.4 → list of fatal errors on boot.
-2. Fill the template completely. Price the sprint: base $2,900 + $400 per 10k lines above 30k + $600 if no tests + $800 for Yii 1.1→PHP 8 framework work. Round to a number ending in 900.
-3. Send as PDF + Markdown. Follow up in 3 days with a one-line "any questions on the plan?".
-
-## 6. Weekly
-- Re-run the lead searches in `leads/leads.md` section E.
-- Publish one article with anonymized findings (Habr + dev.to). Link the free scan.
+## After approval (10 minutes a month)
+- Reply to store reviews that report bugs; ignore the rest.
+- When axe-core releases: `npm view axe-core version`, copy the new `axe.min.js` into `extension/`, bump `version` in `extension/manifest.json`, `./build.sh`, upload.

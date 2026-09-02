@@ -1,0 +1,26 @@
+:root{color-scheme:light dark;--bg:#fff;--ink:#17202a;--muted:#5d6b78;--line:#dde3e8;--accent:#1f6fd6;--accent-ink:#fff;--danger:#b3261e;--soft:#eef3fa}
+@media (prefers-color-scheme:dark){:root{--bg:#161b21;--ink:#e6ebef;--muted:#98a5b0;--line:#2b353f;--accent:#5b9cf0;--accent-ink:#0b1a2c;--danger:#ff8a80;--soft:#1e2a38}}
+*{box-sizing:border-box}
+body{margin:0;width:340px;background:var(--bg);color:var(--ink);font:13.5px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:7px;background:conic-gradient(from 210deg,var(--accent),#38c8a8,var(--accent))}
+.name{font-weight:700;font-size:15px}
+.plan{color:var(--muted);font-size:12px}
+.plan.pro{color:#16875f;font-weight:600}
+main{padding:12px 14px;display:grid;gap:12px}
+.label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.origin{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;word-break:break-all;margin-top:2px}
+.hint{color:var(--muted);font-size:12px;margin-top:2px}
+form{display:grid;gap:8px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.row input[type=number]{width:84px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.row.check{justify-content:flex-start;align-items:flex-start}
+.row.check input{margin-top:3px}
+.row small{display:block;color:var(--muted)}
+button.primary{margin-top:6px;padding:10px 12px;border:0;border-radius:8px;background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:700;cursor:pointer}
+button.primary:disabled{opacity:.6;cursor:default}
+button.link{background:none;border:0;padding:0;color:var(--accent);font:inherit;cursor:pointer;text-decoration:underline}
+.error{color:var(--danger);font-size:12px}
+.last{padding:10px;border-radius:8px;background:var(--soft)}
+footer{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:12px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}

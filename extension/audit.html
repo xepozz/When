@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SiteSweep audit</title>
+<link rel="stylesheet" href="audit.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo" aria-hidden="true"></span> SiteSweep</div>
+  <div class="target">
+    <div class="origin" id="origin">—</div>
+    <div class="status" id="status" role="status" aria-live="polite">Preparing…</div>
+    <div class="bar" aria-hidden="true"><div class="fill" id="fill"></div></div>
+  </div>
+  <div class="actions">
+    <span class="plan" id="plan"></span>
+    <button type="button" id="stop" class="btn">Stop</button>
+    <button type="button" id="exportHtml" class="btn" disabled>Export HTML report</button>
+    <button type="button" id="exportCsv" class="btn" disabled>CSV</button>
+    <button type="button" id="exportJson" class="btn" disabled>JSON</button>
+  </div>
+</header>
+
+<div class="notice" id="notice" hidden></div>
+
+<section class="tiles" id="tiles" aria-label="Summary">
+  <div class="tile"><div class="k">Pages crawled</div><div class="v" id="tPages">0</div><div class="s" id="tPagesSub"></div></div>
+  <div class="tile a11y"><div class="k">Accessibility issues</div><div class="v" id="tA11y">0</div><div class="s" id="tA11ySub"></div></div>
+  <div class="tile links"><div class="k">Broken links</div><div class="v" id="tLinks">0</div><div class="s" id="tLinksSub"></div></div>
+  <div class="tile seo"><div class="k">SEO issues</div><div class="v" id="tSeo">0</div><div class="s" id="tSeoSub"></div></div>
+</section>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" class="tab active" data-tab="a11y" aria-selected="true">Accessibility</button>
+  <button role="tab" class="tab" data-tab="links" aria-selected="false">Links</button>
+  <button role="tab" class="tab" data-tab="seo" aria-selected="false">SEO</button>
+  <button role="tab" class="tab" data-tab="pages" aria-selected="false">Pages</button>
+</nav>
+
+<main>
+  <section id="panel-a11y" class="panel" role="tabpanel">
+    <div class="toolbar">
+      <label>Impact
+        <select id="a11yImpact"><option value="">all</option><option>critical</option><option>serious</option><option>moderate</option><option>minor</option></select>
+      </label>
+      <span class="muted" id="a11yEngine"></span>
+    </div>
+    <div id="a11yList" class="list"></div>
+  </section>
+  <section id="panel-links" class="panel" role="tabpanel" hidden>
+    <div class="toolbar">
+      <label>Show
+        <select id="linkKind"><option value="problems">broken, errors and redirects</option><option value="broken">broken only</option><option value="redirect">redirects only</option><option value="all">everything checked</option></select>
+      </label>
+      <span class="muted" id="linkNote"></span>
+    </div>
+    <div id="linkList" class="list"></div>
+  </section>
+  <section id="panel-seo" class="panel" role="tabpanel" hidden>
+    <div id="seoList" class="list"></div>
+  </section>
+  <section id="panel-pages" class="panel" role="tabpanel" hidden>
+    <div class="tablewrap"><table id="pagesTable"><thead><tr><th>Page</th><th class="num">Status</th><th>Title</th><th class="num">A11y</th><th class="num">SEO</th><th class="num">Links</th><th class="num">KB</th><th class="num">ms</th></tr></thead><tbody></tbody></table></div>
+  </section>
+</main>
+
+<div class="modal" id="upsell" hidden role="dialog" aria-modal="true" aria-labelledby="upsellTitle">
+  <div class="card">
+    <h2 id="upsellTitle">Exports and larger crawls are in Pro</h2>
+    <p>Pro crawls up to 2,000 pages per audit and exports client-ready HTML, CSV and JSON reports. Free stays free for on-screen audits of up to 25 pages.</p>
+    <div class="row">
+      <button type="button" class="btn primary" id="upsellPay">See Pro pricing</button>
+      <button type="button" class="btn" id="upsellLogin">I already paid</button>
+      <button type="button" class="btn" id="upsellClose">Not now</button>
+    </div>
+  </div>
+</div>
+
+<footer class="foot">Accessibility rules by <a href="https://github.com/dequelabs/axe-core" target="_blank" rel="noopener">axe-core</a> (MPL-2.0). Results are stored only in your browser.</footer>
+
+<script src="config.js"></script>
+<script src="pro.js"></script>
+<script src="crawler.js"></script>
+<script src="report.js"></script>
+<script src="audit.js"></script>
+</body>
+</html>

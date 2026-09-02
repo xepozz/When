@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SiteSweep</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<header class="head">
+  <div class="logo" aria-hidden="true"></div>
+  <div>
+    <div class="name">SiteSweep</div>
+    <div class="plan" id="plan">Free plan</div>
+  </div>
+</header>
+
+<main>
+  <section class="site">
+    <div class="label">Site to audit</div>
+    <div class="origin" id="origin">—</div>
+    <div class="hint" id="originHint"></div>
+  </section>
+
+  <form id="form">
+    <label class="row">
+      <span>Max pages</span>
+      <input type="number" id="maxPages" min="1" max="2000" value="25">
+    </label>
+    <div class="hint" id="limitHint"></div>
+    <label class="row check">
+      <input type="checkbox" id="checkExternal">
+      <span>Also check external links <small>(asks for access to other sites)</small></span>
+    </label>
+    <label class="row check">
+      <input type="checkbox" id="runA11y" checked>
+      <span>Accessibility checks <small>(axe-core, WCAG 2.x)</small></span>
+    </label>
+    <label class="row check">
+      <input type="checkbox" id="runSeo" checked>
+      <span>SEO checks <small>(titles, descriptions, headings, canonical)</small></span>
+    </label>
+    <button type="submit" id="start" class="primary">Start audit</button>
+    <div class="error" id="error" hidden></div>
+  </form>
+
+  <section class="last" id="last" hidden>
+    <div class="label">Last audit</div>
+    <div id="lastInfo"></div>
+    <button type="button" id="openLast" class="link">Open report</button>
+  </section>
+</main>
+
+<footer>
+  <button type="button" id="upgrade" class="link">Upgrade to Pro</button>
+  <button type="button" id="login" class="link">Already paid? Log in</button>
+</footer>
+
+<script src="config.js"></script>
+<script src="pro.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
